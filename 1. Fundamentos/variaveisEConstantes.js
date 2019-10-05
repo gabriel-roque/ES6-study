@@ -7,7 +7,7 @@ b = 40
 console.log(a, b);
 
 const c = 500
-// c = 687
+// nao e permitido alterar o valor ex: 'c = 687
 
 console.log(c);
 
