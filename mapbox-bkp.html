@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Supplement forward geocoding search results from another data source</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .map-overlay {
+            position: absolute;
+            width: 150px;
+            top: 0;
+            left: 0;
+            padding: 10px;
+            margin-top: 55px;
+        }
+
+        .map-overlay .map-control-cep {
+            background-color: #fff;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.10);
+            border-radius: 5px;
+        }
+
+        .map-input-cep {
+            width: 75%;
+            border: 0px;
+            background-color: transparent;
+            margin: 0;
+            height: 25px;
+            color: rgba(0, 0, 0, 0.75);
+            padding: 6px 20px;
+            outline: none !important;
+        }
+
+        .map-control-local {
+            background: white;
+            border-radius: 4px;
+            margin-top: 15px;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.10);
+            width: 100px !important;
+            display: inline-block !important;
+        }
+
+        .map-control-local>button {
+            width: 100px;
+            height: 30px;
+            display: block;
+            padding: 0;
+            outline: none;
+            border: 0;
+            color: blue;
+            box-sizing: border-box;
+            background-color: transparent;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script
+        src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.2/mapbox-gl-geocoder.min.js'></script>
+    <link rel='stylesheet'
+        href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.2/mapbox-gl-geocoder.css'
+        type='text/css' />
+    <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
+
+    <div id='map'></div>
+
+    <div class='map-overlay'>
+        <div class='map-control-cep'>
+            <input type="text" class="map-input-cep" placeholder="Digite seu CEP">
+        </div>
+        <div class='map-control-local'>
+            <button>
+                <i class="fa fa-map-marker-alt"></i>
+                Localizar
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZ2FicmllbHJtcyIsImEiOiJjazFzbDBubjAwaDZoM2JwNGRxcmxjY25yIn0.dhif7znIWxyQLfbAGkfFIw';
+
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [-47.8823, -15.7934],
+            zoom: 12
+        });
+
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+            placeholder: 'Pesquise Ex: Brasil ...'
+        });
+
+        map.addControl(geocoder, 'top-left');
+        map.addControl(new mapboxgl.NavigationControl());
+
+        map.on('load', () => {
+            geocoder.on('result', (ev) => {
+                console.log(ev);
+            });
+        });
+
+
+        window.onload = () => {
+            navigator.geolocation.getCurrentPosition((position) => {
+                console.log(position);
+            })
+        }
+
+    </script>
+
+</body>
+
+</html>
