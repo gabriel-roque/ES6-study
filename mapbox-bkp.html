@@ -68,6 +68,15 @@
             background-color: transparent;
             cursor: pointer;
         }
+
+        .mapboxgl-popup {
+            max-width: 200px;
+        }
+
+        .mapboxgl-popup-content {
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+        }
     </style>
 </head>
 
@@ -88,12 +97,6 @@
     <div class='map-overlay'>
         <div class='map-control-cep'>
             <input type="text" class="map-input-cep" placeholder="Digite seu CEP">
-        </div>
-        <div class='map-control-local'>
-            <button>
-                <i class="fa fa-map-marker-alt"></i>
-                Localizar
-            </button>
         </div>
     </div>
 
@@ -117,11 +120,46 @@
         map.addControl(geocoder, 'top-left');
         map.addControl(new mapboxgl.NavigationControl());
 
+        map.addControl(new mapboxgl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            trackUserLocation: true
+        }))
+
         map.on('load', () => {
             geocoder.on('result', (ev) => {
                 console.log(ev);
             });
         });
+
+
+        map.on('click', (e) => {
+
+            let marker = {
+                longitude: e.lngLat.lng,
+                latitude: e.lngLat.lat
+            }
+
+            console.log(marker.longitude, marker.latitude);
+
+            clearMakers();
+            addMaker(marker);
+
+        })
+
+        const addMaker = ({ longitude, latitude }) => {
+            let marker = new mapboxgl.Marker()
+                .setLngLat([longitude, latitude])
+                .addTo(map);
+        }
+
+        const clearMakers = () => {
+            let currentMaker = document.querySelector('.mapboxgl-marker')
+            if (!!currentMaker) {
+                currentMaker.remove();
+            }
+        }
 
 
         window.onload = () => {
