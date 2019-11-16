@@ -1,9 +1,9 @@
 
 // Prototype pode ser utilizado para adicionar uma nova propriedade ao tipo em questão
 
-Number.prototype.hello = function(){
-    console.log(this);
+String.prototype.hello = function(){
+    console.log('Hello Wolrd');
 }
 
-const valor = 15
-valor.hello()
+const palavra = 'Uma string'
+palavra.hello();
